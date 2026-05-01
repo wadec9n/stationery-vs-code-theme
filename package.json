@@ -1,0 +1,42 @@
+{
+  "name": "stationery",
+  "displayName": "Stationery",
+  "description": "A VS Code theme for people who take notes on paper.",
+  "version": "0.2.0",
+  "publisher": "wadec9n",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wadec9n/stationery-vs-code-theme"
+  },
+  "files": [
+    "themes/*.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "scripts": {
+    "audit:contrast": "node ./scripts/audit-contrast.mjs",
+    "build": "node ./scripts/build-themes.mjs",
+    "package": "npm run build && npx @vscode/vsce package"
+  },
+  "categories": [
+    "Themes"
+  ],
+  "contributes": {
+    "themes": [
+      {
+        "label": "Stationery Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/stationery-dark.json"
+      },
+      {
+        "label": "Stationery Light",
+        "uiTheme": "vs",
+        "path": "./themes/stationery-light.json"
+      }
+    ]
+  }
+}
