@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A small HTML demo for theme testing." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/main.css" />
+    <title>Stationery &mdash; demo</title>
+
+    <style>
+      :root {
+        --ink: #1a1a1f;
+        --paper: #fdfaf3;
+      }
+
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+      }
+    </style>
+  </head>
+
+  <body data-theme="light">
+    <!-- Skip link for keyboard users -->
+    <a class="visually-hidden" href="#main">Skip to content</a>
+
+    <header role="banner">
+      <h1>Stationery</h1>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="/" aria-current="page">Home</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="mailto:local-part@example.com?subject=Hello">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="main">
+      <article>
+        <h2>A calmer editor theme</h2>
+        <p>
+          This is a paragraph with <strong>strong emphasis</strong>,
+          <em>italic emphasis</em>, and a <a href="https://example.com">link</a>.
+          You can also use <code>&lt;code&gt;</code> for inline snippets &mdash;
+          it should read clearly against the page.
+        </p>
+
+        <figure>
+          <picture>
+            <source srcset="/img/hero.avif" type="image/avif" />
+            <source srcset="/img/hero.webp" type="image/webp" />
+            <img src="/img/hero.png" alt="Hero illustration" width="1200" height="630" loading="lazy" />
+          </picture>
+          <figcaption>A pencil and a sheet of paper.</figcaption>
+        </figure>
+      </article>
+
+      <section aria-labelledby="signup-heading">
+        <h2 id="signup-heading">Get notified</h2>
+        <form action="/api/subscribe" method="post" novalidate>
+          <fieldset>
+            <legend>Newsletter</legend>
+
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required autocomplete="email"
+              placeholder="local-part@example.com" />
+
+            <label for="freq">Frequency</label>
+            <select id="freq" name="frequency">
+              <option value="weekly" selected>Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="never" disabled>Never &mdash; coming soon</option>
+            </select>
+
+            <label>
+              <input type="checkbox" name="updates" checked />
+              Send me product updates
+            </label>
+
+            <button type="submit">Subscribe &rarr;</button>
+          </fieldset>
+        </form>
+      </section>
+
+      <details open>
+        <summary>FAQ</summary>
+        <p>Yes, the theme is free. Yes, you can fork it.</p>
+      </details>
+    </main>
+
+    <footer>
+      <small>&copy; 2026 Firstname Lastname. All rights reserved.</small>
+    </footer>
+
+    <script type="module">
+      const form = document.querySelector("form");
+      form?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = new FormData(form);
+        const res = await fetch(form.action, { method: "POST", body: data });
+        console.log(`status: ${res.status}`);
+      });
+    </script>
+  </body>
+
+</html>

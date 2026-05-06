@@ -1,0 +1,145 @@
+// Component styles for the demo theme.
+// Showcases variables, maps, mixins, functions, @use,
+// control flow, and placeholder selectors.
+
+@use "sass:color";
+@use "sass:map";
+@use "sass:math";
+
+$breakpoints: (
+  "sm": 480px,
+  "md": 768px,
+  "lg": 1024px,
+  "xl": 1280px,
+);
+
+$palette: (
+  "ink":    #1a1a1f,
+  "paper":  #fdfaf3,
+  "accent": #3b6ea0,
+  "accent-fg": #fff,
+);
+
+$theme-flags: (
+  "contrast-mode": balanced,
+  "motion-safe": true,
+);
+
+$z-layers: (
+  base: 0,
+  dropdown: 100,
+  modal: 1000,
+  toast: 9999,
+);
+
+@function color($name) {
+  @if not map.has-key($palette, $name) {
+    @error "Unknown color `#{$name}` in $palette.";
+  }
+  @return map.get($palette, $name);
+}
+
+@function rem($px, $base: 16) {
+  @return math.div($px, $base) * 1rem;
+}
+
+@mixin breakpoint($size) {
+  $width: map.get($breakpoints, $size);
+  @if $width == null {
+    @error "Unknown breakpoint `#{$size}`.";
+  }
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin button-variant($bg, $fg: white) {
+  background: $bg;
+  color: $fg;
+
+  &:hover,
+  &:focus-visible {
+    background: color.adjust($bg, $lightness: -8%);
+  }
+
+  &:disabled {
+    background: color.mix($bg, color("paper"), 60%);
+    cursor: not-allowed;
+  }
+}
+
+%card-base {
+  display: grid;
+  gap: rem(16);
+  padding: rem(20);
+  border-radius: var(--radius, 0.75rem);
+  background: color("paper");
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.button {
+  appearance: none;
+  border: 0;
+  border-radius: 0.375rem;
+  padding: rem(10) rem(20);
+  font: inherit;
+  cursor: pointer;
+
+  &--primary   { @include button-variant(color("accent"), color("accent-fg")); }
+  &--ghost     { @include button-variant(transparent, color("ink")); }
+
+  @each $size, $px in (sm: 12, md: 14, lg: 18) {
+    &--#{$size} {
+      font-size: rem($px);
+    }
+  }
+}
+
+.card {
+  @extend %card-base;
+
+  &__title {
+    margin: 0;
+    font-size: rem(20);
+    font-weight: 600;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+
+    li {
+      $stripe: color.scale(color("paper"), $lightness: -3%);
+      &:nth-child(odd) { background: $stripe; }
+    }
+  }
+
+  &[data-contrast="#{map.get($theme-flags, "contrast-mode")}"] {
+    outline: 1px solid color("accent");
+  }
+}
+
+@include breakpoint("md") {
+  .card { grid-template-columns: 96px 1fr; }
+}
+
+// Generate utility classes for spacing 0..6.
+@for $i from 0 through 6 {
+  $value: rem($i * 4);
+  .m-#{$i} { margin: $value; }
+  .p-#{$i} { padding: $value; }
+}
+
+@each $name, $hex in $palette {
+  .swatch--#{$name} {
+    --swatch: #{$hex};
+    border-color: var(--swatch);
+  }
+}
+
+@if function-exists("color") {
+  :root {
+    --ink:   #{color("ink")};
+    --paper: #{color("paper")};
+  }
+}

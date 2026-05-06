@@ -1,0 +1,41 @@
+{
+  // VS Code workspace settings demo.
+  "workbench.colorTheme": "Stationery Light",
+  "editor.fontFamily": "'Iowan Old Style', 'SF Mono', monospace",
+  "editor.minimap.enabled": false,
+  "editor.guides.bracketPairs": "active",
+  "editor.inlayHints.enabled": "on",
+  "editor.rulers": [
+    80,
+    100
+  ],
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": [
+          "comment",
+          "punctuation.definition.comment"
+        ],
+        "settings": {
+          "fontStyle": "italic"
+        }
+      }
+    ]
+  },
+  "files.associations": {
+    "*.mdx": "mdx",
+    "Dockerfile.*": "dockerfile"
+  },
+  "search.exclude": {
+    "**/dist": true,
+    "**/.astro": true
+  },
+  "terminal.integrated.env.osx": {
+    "NO_COLOR": "1",
+    "STATIONERY_PREVIEW": "true"
+  },
+  "yaml.schemas": {
+    "https://json.example.com/github-workflow.json": "demos/github-actions.yml"
+  },
+  "markdown.validate.fileLinks.enabled": "warning",
+}

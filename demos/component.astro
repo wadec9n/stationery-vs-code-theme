@@ -1,0 +1,131 @@
+---
+// Article card component.
+// Showcases the Astro frontmatter (TS), the template (HTML+JSX expressions),
+// and component-scoped <style> and <script>.
+
+type Cover = {
+  src: string;
+  alt?: string;
+};
+
+export interface Props {
+  title: string;
+  href: string;
+  publishedAt: Date | string;
+  cover?: Cover;
+  tags?: readonly string[];
+  featured?: boolean;
+  excerpt?: string;
+}
+
+const {
+  title,
+  href,
+  publishedAt,
+  cover,
+  tags = [],
+  featured = false,
+  excerpt = "No excerpt provided.",
+} = Astro.props;
+
+const published = publishedAt instanceof Date ? publishedAt : new Date(publishedAt);
+
+const formatter = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
+const isoDate = published.toISOString();
+const wordCount = await fetch(`${href}.json`)
+  .then((r) => r.ok ? r.json() : { words: 0 })
+  .then((d) => d.words);
+
+const readingMinutes = Math.max(1, Math.round(wordCount / 220));
+---
+
+<article class:list={["card", { "card--featured": featured }]} data-href={href}>
+  {cover && (
+    <a href={href} class="card__media">
+      <img
+        src={cover.src}
+        alt={cover.alt ?? ""}
+        width="960"
+        height="540"
+        loading="lazy"
+      />
+    </a>
+  )}
+
+  <div class="card__body">
+    <h3 class="card__title">
+      <a href={href}>{title}</a>
+    </h3>
+
+    <p class="card__meta">
+      <time datetime={isoDate}>{formatter.format(published)}</time>
+      <span aria-hidden="true"> · </span>
+      <span>{readingMinutes} min read</span>
+    </p>
+
+    {tags.length > 0 && (
+      <ul class="card__tags">
+        {tags.map((name) => (
+          <li><span class="tag">{name}</span></li>
+        ))}
+      </ul>
+    )}
+
+    <slot name="excerpt">
+      <p class="card__excerpt"><em>{excerpt}</em></p>
+    </slot>
+  </div>
+</article>
+
+<style lang="scss">
+  .card {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--card-bg, #fff);
+    transition: transform 200ms ease;
+
+    &:hover { transform: translateY(-2px); }
+    &--featured { outline: 2px solid currentColor; }
+
+    &__title {
+      font-size: 1.25rem;
+      font-weight: 600;
+
+      a { color: inherit; text-decoration: none; }
+    }
+
+    &__meta { color: oklch(40% 0 0); font-size: 0.875rem; }
+    &__tags { display: flex; gap: 0.5rem; padding: 0; list-style: none; }
+  }
+
+  .tag {
+    display: inline-flex;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in oklch, currentColor 12%, white 88%);
+    font-size: 0.75rem;
+  }
+</style>
+
+<script lang="ts">
+  // Client-side: track which cards are visible for analytics.
+  const cards = document.querySelectorAll<HTMLElement>(".card[data-href]");
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      const href = entry.target.getAttribute("data-href");
+      if (href) navigator.sendBeacon?.("/api/impressions", href);
+      observer.unobserve(entry.target);
+    }
+  }, { threshold: 0.5 });
+
+  cards.forEach((c) => observer.observe(c));
+</script>

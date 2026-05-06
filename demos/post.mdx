@@ -1,0 +1,139 @@
+---
+title: Designing a calmer editor theme
+description: Notes on the tradeoffs behind Stationery's color choices.
+publishedAt: 2026-05-05
+author:
+  name: Firstname Lastname
+  handle: userhandle
+tags: [design, theming, accessibility]
+draft: false
+---
+
+export const meta = {
+  readingTime: "6 min",
+  wordCount: 1240,
+};
+
+export const ratios = [
+  { token: "comment", ratio: 4.7 },
+  { token: "keyword", ratio: 6.1 },
+  { token: "string", ratio: 5.4 },
+  { token: "function", ratio: 5.9 },
+];
+
+# Designing a calmer editor theme
+
+<small>by **Firstname Lastname** · {meta.readingTime}</small>
+
+A good editor theme should _disappear_. Stationery is an attempt to push
+that idea to its natural conclusion: lift the noise, keep the signal,
+and let the words do the work.
+
+<aside data-type="info">
+  This post assumes some familiarity with VS Code's TextMate scopes. If you
+  haven't seen them before, the [scope inspector][inspector] is the fastest way
+  in.
+</aside>
+
+[inspector]: https://code.visualstudio.com/api/extension-guides/color-theme
+
+## The brief
+
+I started with three rules:
+
+1. No more than **four** accent hues across the whole palette.
+2. Plain prose should read like ink on paper, not like a UI.
+3. Keywords get weight; values get color.
+
+<figure>
+  <svg viewBox="0 0 240 120" role="img" aria-label="Pencils on cream paper">
+    <rect width="240" height="120" fill="#fdfaf3" />
+    <rect x="28" y="24" width="140" height="16" rx="8" fill="#d7b48a" />
+    <rect x="28" y="52" width="150" height="16" rx="8" fill="#b57a5d" />
+    <rect x="28" y="80" width="132" height="16" rx="8" fill="#6b8f72" />
+    <polygon points="168,24 194,32 168,40" fill="#3b3b42" />
+    <polygon points="178,52 204,60 178,68" fill="#3b3b42" />
+    <polygon points="160,80 186,88 160,96" fill="#3b3b42" />
+  </svg>
+  <figcaption>The visual reference I kept open while picking hues.</figcaption>
+</figure>
+
+## Contrast budgeting
+
+Accessibility guidance gives a floor (4.5:1 for body text), but it doesn't
+say much about the _ceiling_. Pure black on pure white scores 21:1 — and
+hurts to look at after an hour. Stationery targets **8.5:1** for body
+text and lets accents drift between **4.6:1** and **6.0:1**.
+
+```js
+// Quick contrast check used during palette tuning.
+import { getContrast } from "polished";
+
+const ratio = getContrast("#3b6ea0", "#fdfaf3");
+console.log(`accent vs paper: ${ratio.toFixed(2)}:1`);
+```
+
+<table>
+  <caption>Body-to-token contrast ratios in the light variant.</caption>
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>Ratio</th>
+    </tr>
+  </thead>
+  <tbody>
+    {ratios.map((row) => (
+      <tr key={row.token}>
+        <td>
+          <code>{row.token}</code>
+        </td>
+        <td>{row.ratio.toFixed(1)}:1</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+## What surprised me
+
+> The hardest part wasn't choosing colors — it was choosing what _not_ to
+> color. — _me, three weeks in_
+
+Operators, punctuation, and most delimiters are now token-default. The
+result is a calmer field of view, especially in dense files like
+`webpack.config.js` or anything generic-heavy in TypeScript.
+
+### Before / after
+
+<div className="grid grid-cols-2 gap-4">
+  <div>
+    <p>**Before**</p>
+    <pre>{`type Result<T, E = Error> =
+  | { ok: true; value: T }
+  | { ok: false; error: E };`}</pre>
+  </div>
+  <div>
+    <p>**After**</p>
+    <pre>{`type Result<T, E = Error> =
+  | { ok: true; value: T }
+  | { ok: false; error: E };`}</pre>
+  </div>
+</div>
+
+## Try it
+
+```bash
+code --install-extension user.theme
+```
+
+If you ship a theme of your own, I'd love to see it. Drop a link in the
+[discussions](https://example.com/user/repo/discussions)
+or @ me directly.
+
+<aside data-type="warning">
+  The dark variant is still tuning in some semantic-token edge cases — feedback
+  issues welcome.
+</aside>
+
+---
+
+<sub>Tagged: design · theming · accessibility</sub>

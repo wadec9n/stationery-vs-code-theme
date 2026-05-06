@@ -1,0 +1,38 @@
+diff --git a/themes/stationery-light.json b/themes/stationery-light.json
+index 7d2df40..98a4f2c 100644
+--- a/themes/stationery-light.json
++++ b/themes/stationery-light.json
+@@ -462,8 +462,8 @@
+       "scope": [
+         "comment",
+         "punctuation.definition.comment"
+-      ],
+-      "settings": { "foreground": "#536570", "fontStyle": "italic" }
++      ],
++      "settings": { "foreground": "#465762", "fontStyle": "italic" }
+     },
+     {
+       "scope": [
+@@ -742,7 +742,9 @@
+       "scope": [
+         "entity.name.function",
+         "support.function"
+-      ],
++      ],
++      "name": "Functions and methods",
++      "settingsDescription": "Lift callable symbols a half-step brighter.",
+       "settings": { "foreground": "#00729B" }
+     }
+diff --git a/demos/settings.jsonc b/demos/settings.jsonc
+new file mode 100644
+index 0000000..4df3a2e
+--- /dev/null
++++ b/demos/settings.jsonc
+@@ -0,0 +1,8 @@
++{
++  // VS Code workspace settings demo.
++  "workbench.colorTheme": "Stationery Dark",
++  "editor.bracketPairColorization.enabled": true,
++  "editor.guides.bracketPairs": "active",
++  "files.trimTrailingWhitespace": true
++}

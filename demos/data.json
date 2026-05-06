@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json.example.com/package.json",
+  "name": "@example/widget-kit",
+  "version": "2.4.0-beta.3",
+  "description": "A small kit of accessible UI primitives.",
+  "private": false,
+  "license": "MIT",
+  "author": {
+    "name": "Firstname Lastname",
+    "email": "local-part@example.com",
+    "url": "https://example.com"
+  },
+  "keywords": [
+    "ui",
+    "components",
+    "accessible",
+    "react"
+  ],
+  "homepage": "https://example.com/widget-kit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://example.com/example/widget-kit.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./button": {
+      "types": "./dist/button.d.ts",
+      "import": "./dist/button.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . --max-warnings=0",
+    "release": "changeset publish"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "eslint": "^9.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.5.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "config": {
+    "buckets": [
+      {
+        "name": "primary",
+        "weight": 0.6,
+        "active": true
+      },
+      {
+        "name": "fallback",
+        "weight": 0.4,
+        "active": false
+      }
+    ],
+    "limits": {
+      "maxSizeBytes": 1048576,
+      "timeoutMs": 30000,
+      "retries": null
+    }
+  }
+}

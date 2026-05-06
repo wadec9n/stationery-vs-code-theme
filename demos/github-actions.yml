@@ -1,0 +1,90 @@
+# GitHub Actions workflow.
+# Showcases expressions, matrices, multi-line run blocks,
+# anchors, aliases, env vars, and nested mappings.
+
+name: build-and-deploy
+run-name: "build #${{ github.run_number }}"
+
+on:
+  push:
+    branches: [main, "release/**"]
+    tags: ["v*.*.*"]
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+
+defaults: &defaults
+  runs-on: ubuntu-22.04
+  timeout-minutes: 15
+
+env:
+  NODE_VERSION: "20"
+  CACHE_PREFIX: v2-${{ runner.os }}
+  RELEASE_NOTES: |
+    Highlights:
+      * Faster cold-start (~38% improvement)
+      * Reduced bundle size to 142 KB gzipped
+      * New `--strict` flag for the CLI
+
+strategy-template: &matrix-template
+  fail-fast: false
+  matrix:
+    os: [ubuntu-22.04, macos-13, windows-2022]
+    include:
+      - os: ubuntu-22.04
+        artifact: linux-x64
+      - os: macos-13
+        artifact: darwin-arm64
+
+jobs:
+  test:
+    <<: *defaults
+    strategy: *matrix-template
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install
+        run: npm ci --no-audit
+      - name: Lint and test
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run lint
+          npm test -- --reporter=verbose
+        env:
+          FORCE_COLOR: "1"
+
+  deploy:
+    <<: *defaults
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment:
+      name: ${{ inputs.environment || 'production' }}
+      url: https://example.com
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: dist/
+          retention-days: 30
+          if-no-files-found: error

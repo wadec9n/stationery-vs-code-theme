@@ -1,0 +1,81 @@
+# Workspace manifest, Cargo-style.
+# Showcases sections, dotted keys, arrays-of-tables,
+# inline tables, datetimes, and string variants.
+
+[package]
+name        = "stationery-tools"
+version     = "0.4.2"
+edition     = "2021"
+authors     = ["Firstname Lastname <local-part@example.com>"]
+description = "Tooling for the Stationery editor theme."
+license     = "MIT OR Apache-2.0"
+repository  = "https://example.com/user/example-repo"
+keywords    = ["theme", "editor", "vscode"]
+categories  = ["development-tools"]
+readme      = "README.md"
+
+[package.metadata.docs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[dependencies]
+serde       = { version = "1.0", features = ["derive"] }
+serde_json  = "1"
+clap        = { version = "4.5", features = ["derive", "env"], default-features = false }
+tokio       = { version = "1.36", features = ["macros", "rt-multi-thread", "fs"] }
+toml        = "0.8"
+
+[dev-dependencies]
+insta       = { version = "1.39", features = ["yaml"] }
+proptest    = "1.4"
+
+[features]
+default = ["cli"]
+cli     = ["clap"]
+unstable-api = []
+
+[profile.release]
+opt-level     = 3
+lto           = "thin"
+codegen-units = 1
+strip         = "symbols"
+
+[profile.dev]
+opt-level = 0
+debug     = true
+
+# Custom build settings for the theme generator.
+[tool.theme-gen]
+output-dir = "themes/"
+variants   = ["light", "dark"]
+contrast   = { body = 8.5, accent-min = 4.6, accent-max = 6.0 }
+
+palette = """
+ink     = #1a1a1f
+paper   = #fdfaf3
+keyword = #b04a3a
+string  = #3e7a4e
+"""
+
+snapshot-path = '''C:\Users\user\snapshots\stationery'''
+
+# Arrays of tables — one entry per token rule.
+[[tool.theme-gen.rules]]
+scope      = "comment"
+foreground = "#8a7e6b"
+font-style = "italic"
+
+[[tool.theme-gen.rules]]
+scope      = ["keyword", "keyword.control"]
+foreground = "#b04a3a"
+
+[[tool.theme-gen.rules]]
+scope      = "string"
+foreground = "#3e7a4e"
+
+# Release metadata.
+[release]
+last-published = 2026-05-05T12:30:00Z
+notes-since    = 2026-04-01
+window         = { open = 09:00:00, close = 17:00:00 }
+channels       = ["stable", "beta", "nightly"]

@@ -1,0 +1,55 @@
+# Application runtime config.
+# Showcases nested maps, inline collections, block scalars,
+# booleans, numbers, timestamps, and environment placeholders.
+
+service:
+  name: api-gateway
+  environment: production
+  replicas: 3
+  image: example.com/example/api-gateway:2026.05.05
+  startedAt: 2026-05-05T12:30:00Z
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  baseUrl: https://api.example.com
+  trustedProxies: [10.0.0.0/8, 192.168.0.0/16]
+
+resources:
+  requests: { cpu: "250m", memory: 256Mi }
+  limits: { cpu: "1", memory: 1Gi }
+
+flags:
+  enableTls: true
+  readTimeout: 30s
+  cacheTtl: 15m
+  redactHeaders: [authorization, cookie, x-api-key]
+
+routes:
+  - path: /healthz
+    methods: [GET]
+    auth: false
+  - path: /v1/items
+    methods: [GET, POST, DELETE]
+    auth: true
+    rateLimit:
+      burst: 30
+      sustained: 10
+
+logging:
+  level: info
+  format: json
+  sampling:
+    initial: 10
+    thereafter: 100
+  redact:
+    - authorization
+    - cookie
+
+secrets:
+  databaseUrl: ${DATABASE_URL}
+  deployToken: ${DEPLOY_TOKEN}
+
+notes: |
+  Keep this file dense enough to exercise key/value styling,
+  indentation guides, quoted scalars, and mixed collection forms.

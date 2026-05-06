@@ -1,0 +1,11 @@
+{
+  // Intentionally broken fixture for invalid-token styling.
+  "themeName": "Stationery",
+  "variant": "light",
+  "colors": {
+    "keyword": "#A83D16",
+    "string": "#0B784F",,
+    "number": "#8F3B21",
+    "accent: "#77501F"
+  }
+}
