@@ -2,7 +2,7 @@
   "name": "stationery",
   "displayName": "Stationery",
   "description": "A VS Code theme for people who take notes on paper.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "wadec9n",
   "license": "MIT",
   "repository": {
@@ -20,7 +20,7 @@
   "scripts": {
     "audit:contrast": "node ./scripts/audit-contrast.mjs",
     "build": "node ./scripts/build-themes.mjs",
-    "package": "npm run build && npx @vscode/vsce package"
+    "package": "npm version patch --no-git-tag-version && npm run build && npx @vscode/vsce package"
   },
   "categories": [
     "Themes"
